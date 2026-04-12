@@ -5,7 +5,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import {
     Zap, Thermometer, MapPin, Gauge, Signal, Search,
-    LayoutGrid, ChevronRight, Trash2, Cpu, Activity, Battery
+    LayoutGrid, ChevronRight, Trash2, Cpu, Activity, Battery,
+    MoreHorizontal, TrendingUp, TrendingDown
 } from 'lucide-react';
 import '../index.css';
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -21,26 +22,6 @@ const Dashboard = () => {
     const [latestData, setLatestData] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isSelectingDashboard, setIsSelectingDashboard] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const userString = localStorage.getItem('user');
-    const user = userString ? JSON.parse(userString) : {};
-    const isAdmin = user.role === 'admin';
-
-    const handleDeleteDashboard = async (e, id) => {
-        e.stopPropagation();
-        if (!window.confirm("Are you sure you want to delete this dashboard?")) return;
-        try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-            await axios.delete(`${apiUrl}/api/dashboards/${id}`);
-            const remaining = dashboards.filter(d => d._id !== id);
-            setDashboards(remaining);
-            if (remaining.length === 1) setSelectedDashboard(remaining[0]);
-            else if (remaining.length === 0) setSelectedDashboard(null);
-        } catch (error) {
-            console.error("Error deleting dashboard:", error);
-        }
-    };
 
     useEffect(() => {
         const fetchDashboards = async () => {
@@ -94,85 +75,90 @@ const Dashboard = () => {
             label: 'Battery SOC',
             value: `${latestData.batterySOC ?? '0'}`,
             unit: '%',
-            status: latestData.batterySOC < 20 ? 'CRITICAL' : 'OPERATIONAL',
-            statusColor: latestData.batterySOC < 20 ? '#EF4444' : '#F59E0B',
-            progress: latestData.batterySOC,
+            grad: 'grad-blue',
+            trend: '+2.45%',
         },
         {
             icon: <Zap size={20} />,
-            label: 'Battery Voltage',
+            label: 'Voltage',
             value: `${latestData.batteryVoltage ?? '0'}`,
             unit: 'V',
-            status: 'STABLE OUTPUT',
-            statusColor: '#059669',
+            grad: 'grad-teal',
+            trend: '+1.12%',
         },
         {
             icon: <Thermometer size={20} />,
             label: 'Battery Temp',
             value: `${latestData.batteryTemperature ?? '0'}`,
             unit: '°C',
-            status: latestData.batteryTemperature > 45 ? 'HIGH' : 'NORMAL',
-            statusColor: latestData.batteryTemperature > 45 ? '#D97706' : '#059669',
+            grad: 'grad-rose',
+            trend: '-0.34%',
         },
         {
             icon: <Thermometer size={20} />,
             label: 'Motor Temp',
             value: `${latestData.motorTemperature ?? '0'}`,
             unit: '°C',
-            status: 'OPTIMAL',
-            statusColor: '#059669',
+            grad: 'grad-orange',
+            trend: '+2.10%',
         },
         {
             icon: <Activity size={20} />,
             label: 'Motor RPM',
             value: (latestData.motorRPM ?? 0).toLocaleString(),
             unit: '',
-            status: 'ACTIVE DRIVE',
-            statusColor: '#F59E0B',
+            grad: 'grad-purple',
+            trend: '+5.42%',
         },
         {
             icon: <Gauge size={20} />,
             label: 'Wheel RPM',
             value: (latestData.wheelRPM ?? 0).toLocaleString(),
             unit: '',
-            status: 'SYNCHRONIZED',
-            statusColor: '#059669',
+            grad: 'grad-indigo',
+            trend: '+4.81%',
         },
         {
             icon: <Signal size={20} />,
             label: 'Loss',
             value: `${latestData.loss ?? '0'}`,
             unit: '%',
-            status: 'EFFICIENCY METRIC',
-            statusColor: '#6B7280',
+            grad: 'grad-navy',
+            trend: '-1.05%',
         },
         {
             icon: <Zap size={20} />,
             label: 'Torque',
             value: `${latestData.torque ?? '0'}`,
             unit: 'Nm',
-            status: 'PEAK POWER',
-            statusColor: '#F59E0B',
+            grad: 'grad-emerald',
+            trend: '+3.22%',
         },
     ] : [];
 
     const chartOptions = {
-        chart: { type: 'area', toolbar: { show: false }, zoom: { enabled: false } },
-        stroke: { curve: 'smooth', width: 2 },
+        chart: { type: 'area', toolbar: { show: false }, zoom: { enabled: false }, background: 'transparent' },
+        theme: { mode: 'dark' },
+        stroke: { curve: 'smooth', width: 3 },
         fill: {
             type: 'gradient',
-            gradient: { shadeIntensity: 1, opacityFrom: 0.2, opacityTo: 0.05, stops: [0, 100] }
+            gradient: {
+                shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 100], colorStops: [
+                    { offset: 0, color: '#346eea', opacity: 0.4 },
+                    { offset: 100, color: '#346eea', opacity: 0 }
+                ]
+            }
         },
-        colors: ['#F59E0B'],
+        colors: ['#346eea'],
         xaxis: {
             type: 'datetime',
-            labels: { style: { colors: '#94A3B8', fontSize: '11px', fontWeight: 600 } },
+            labels: { style: { colors: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 600 } },
             axisBorder: { show: false }, axisTicks: { show: false }
         },
-        yaxis: { labels: { style: { colors: '#94A3B8', fontSize: '11px', fontWeight: 600 } } },
-        grid: { borderColor: '#E5E7EB', strokeDashArray: 4 },
+        yaxis: { labels: { style: { colors: 'rgba(255, 255, 255, 0.5)', fontSize: '11px', fontWeight: 600 } } },
+        grid: { borderColor: 'rgba(255, 255, 255, 0.05)', strokeDashArray: 4 },
         dataLabels: { enabled: false },
-        tooltip: { theme: 'light' }
+        tooltip: { theme: 'dark' }
     };
 
     const chartSeries = [{ name: 'SOC', data: deviceData.map(d => [new Date(d.timestamp).getTime(), d.batterySOC]) }];
@@ -186,23 +172,46 @@ const Dashboard = () => {
                         <h1 className="text-2xl font-black text-[#111827] tracking-tight">Vehicle Dashboards</h1>
                         <p className="text-sm text-[#6B7280] font-medium mt-1">Select a connected vehicle to view live telemetry diagnostics.</p>
                     </header>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {dashboards.map(d => (
-                            <div key={d._id} onClick={() => { setSelectedDashboard(d); setIsSelectingDashboard(false); }} className="kpi-card cursor-pointer group hover:border-[#F59E0B]/50">
-                                <div className="flex items-center gap-4">
-                                    <div className="icon-box group-hover:bg-[#F59E0B] group-hover:text-white transition-colors">
-                                        <Zap size={22} className="fill-current" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {dashboards.map((d, i) => {
+                            const grads = ['grad-blue', 'grad-indigo', 'grad-teal', 'grad-purple', 'grad-navy', 'grad-emerald'];
+                            const currentGrad = grads[i % grads.length];
+
+                            return (
+                                <div
+                                    key={d._id}
+                                    onClick={() => { setSelectedDashboard(d); setIsSelectingDashboard(false); }}
+                                    className={`premium-kpi ${currentGrad} cursor-pointer group scale-100 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300`}
+                                    style={{ minHeight: '200px' }}
+                                >
+                                    <div className="sparkline-bg opacity-30" />
+
+                                    <div className="flex justify-between items-start relative z-10">
+                                        <div className="glass-icon group-hover:bg-white group-hover:text-[#111827] transition-all duration-500">
+                                            <Zap size={24} className="fill-current" />
+                                        </div>
+                                        <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                                            <span className="text-[10px] font-black tracking-widest uppercase">Node Ready</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold text-[#111827]">{d.dashboardName}</h3>
-                                        <p className="text-xs font-mono text-[#94A3B8]">{d.deviceId}</p>
+
+                                    <div className="mt-6 relative z-10">
+                                        <h3 className="text-xl font-black tracking-tight mb-1">{d.dashboardName}</h3>
+                                        <div className="flex items-center gap-2 text-white/60">
+                                            <Cpu size={12} />
+                                            <span className="text-xs font-mono font-bold uppercase tracking-wider">{d.deviceId}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Connect to Stream</span>
+                                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-[#111827] transition-all duration-500">
+                                            <ChevronRight size={18} />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-[#F1F5F9] flex justify-between items-center text-xs font-bold text-[#F59E0B]">
-                                    VIEW LIVE DATA <ChevronRight size={16} />
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             ) : (
@@ -210,20 +219,19 @@ const Dashboard = () => {
                     {/* Dashboard Header */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#F59E0B]">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#346eea]">
                                 <Zap size={20} className="text-white fill-current" />
                             </div>
                             <div>
                                 <h1 className="text-2xl font-black text-[#111827] tracking-tight">EV System Monitor</h1>
                                 <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.2em]">MAIN</span>
-                                    <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Live Telemetry Diagnostics</span>
+                                    <span className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.2em]">Live Data Acquisition</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 w-full md:w-auto">
-                            <select 
+                        <div className="flex items-center gap-4">
+                            <select
                                 className="bg-white border border-[#E5E7EB] rounded-xl px-4 py-2.5 text-sm font-bold text-[#111827] outline-none shadow-sm min-w-[180px]"
                                 value={selectedDashboard?._id || ''}
                                 onChange={e => setSelectedDashboard(dashboards.find(d => d._id === e.target.value))}
@@ -232,72 +240,78 @@ const Dashboard = () => {
                             </select>
                             <div className="bg-white/50 border border-[#E5E7EB] rounded-xl px-4 py-2.5 flex items-center gap-2.5 shadow-sm">
                                 <div className="status-dot"></div>
-                                <span className="text-[10px] font-black text-[#059669] uppercase tracking-wider">System Active</span>
+                                <span className="text-[10px] font-black text-[#059669] uppercase tracking-wider">Node Active</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* KPI Grid */}
+                    {/* KPI Grid (Overhaul to Match Image) */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {kpis.map((k, i) => (
-                            <div key={i} className="kpi-card">
-                                <div className="flex justify-between items-start">
-                                    <div className="icon-box">
+                            <div key={i} className={`premium-kpi ${k.grad}`}>
+                                <div className="sparkline-bg" />
+
+                                <div className="flex justify-between items-start relative z-10">
+                                    <div className="glass-icon">
                                         {k.icon}
                                     </div>
-                                    <span className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.15em]">{k.label}</span>
+                                    <button className="text-white/40 hover:text-white transition-colors">
+                                        <MoreHorizontal size={18} />
+                                    </button>
                                 </div>
-                                <div className="flex items-baseline gap-1 mt-2">
-                                    <span className="text-3xl font-black text-[#111827] tracking-tighter">{k.value}</span>
-                                    <span className="text-lg font-bold text-[#94A3B8]">{k.unit}</span>
-                                </div>
-                                {k.progress !== undefined && (
-                                    <div className="w-full bg-[#F3F4F6] h-1.5 rounded-full overflow-hidden mt-1">
-                                        <div className="h-full bg-[#F59E0B] rounded-full transition-all duration-1000" style={{ width: `${k.progress}%` }}></div>
+
+                                <div className="mt-4 relative z-10">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-3xl font-black tracking-tighter">{k.value}</span>
+                                        <span className="text-base font-bold text-white/60">{k.unit}</span>
                                     </div>
-                                )}
-                                <div className="mt-auto pt-2 flex justify-end">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-right" style={{ color: k.statusColor }}>{k.status}</span>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/50 mt-1">{k.label}</p>
+                                </div>
+
+                                <div className="flex justify-end mt-4 relative z-10">
+                                    <div className="trend-badge">
+                                        {k.trend.startsWith('+') ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                                        {k.trend}
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    {/* Analytics Row */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* History Chart */}
-                        <div className="lg:col-span-2 bg-white rounded-2xl border border-[#E5E7EB] p-8 shadow-sm">
-                            <div className="flex justify-between items-center mb-8">
+                        <div className="lg:col-span-2 premium-kpi grad-navy p-8" style={{ minHeight: '450px' }}>
+                            <div className="sparkline-bg opacity-10" />
+                            <div className="flex justify-between items-center mb-8 relative z-10">
                                 <div>
-                                    <h3 className="text-base font-black text-[#111827]">Telemetry History</h3>
-                                    <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mt-1">Battery Level VS Time</p>
+                                    <h3 className="text-lg font-black text-white tracking-tight">History Log</h3>
+                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Real-time Stream Data</p>
                                 </div>
-                                <div className="flex items-center gap-2.5 bg-[#FFF7ED] border border-[#FDE68A] px-3 py-1.5 rounded-lg">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></div>
-                                    <span className="text-[10px] font-black text-[#D97706] uppercase tracking-wider">Live Buffer</span>
+                                <div className="trend-badge">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#346eea] animate-pulse"></div>
+                                    <span className="uppercase tracking-widest text-[9px]">LIVE SYNC</span>
                                 </div>
                             </div>
-                            <div className="h-[350px] -ml-4">
+                            <div className="h-[320px] -ml-4 relative z-10">
                                 <Chart options={chartOptions} series={chartSeries} type="area" height="100%" width="100%" />
                             </div>
                         </div>
 
                         {/* Location Map */}
-                        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-8 shadow-sm flex flex-col">
-                            <div className="flex justify-between items-center mb-8 text-[#111827]">
+                        <div className="premium-kpi grad-indigo p-8 flex flex-col" style={{ minHeight: '450px' }}>
+                            <div className="sparkline-bg opacity-10" />
+                            <div className="flex justify-between items-center mb-8 relative z-10 text-white">
                                 <div className="flex items-center gap-3">
-                                    <MapPin size={20} className="text-[#F59E0B]" />
+                                    <div className="glass-icon">
+                                        <MapPin size={20} />
+                                    </div>
                                     <div>
-                                        <h3 className="text-base font-black">Fleet Location</h3>
-                                        <p className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest mt-1">Real-time GPS</p>
+                                        <h3 className="text-lg font-black tracking-tight">Live GPS</h3>
+                                        <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Vehicle Geofence</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 bg-[#F8FAFC] border border-[#E5E7EB] px-3 py-1.5 rounded-lg">
-                                    <Signal size={12} className="text-[#64748B]" />
-                                    <span className="text-[10px] font-black text-[#64748B] uppercase tracking-wider">GPS Feed</span>
-                                </div>
                             </div>
-                            <div className="flex-1 rounded-2xl overflow-hidden border border-[#E5E7EB] min-h-[300px] z-0">
+                            <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 bg-[#111827] relative z-10">
                                 <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false}>
                                     <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
                                     {latestData?.gpsLatitude && (

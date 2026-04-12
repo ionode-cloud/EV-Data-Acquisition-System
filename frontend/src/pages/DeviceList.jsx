@@ -96,7 +96,7 @@ const DeviceList = () => {
                         <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
                         <input
                             type="text"
-                            className="w-full bg-white border border-[#E5E7EB] rounded-xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-[#F59E0B] transition-all"
+                            className="w-full bg-white border border-[#E5E7EB] rounded-xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-[#346eea] transition-all"
                             placeholder="Filter devices..."
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
@@ -118,7 +118,7 @@ const DeviceList = () => {
             {showForm && (
                 <div className="saas-card p-8 animate-in slide-in-from-top-4 duration-300">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 flex items-center justify-center text-[#F59E0B]">
+                        <div className="w-8 h-8 rounded-lg bg-[#346eea]/10 flex items-center justify-center text-[#346eea]">
                             <Cpu size={18} />
                         </div>
                         <h3 className="text-base font-black text-[#111827]">Register New Device</h3>
@@ -154,7 +154,7 @@ const DeviceList = () => {
                 <div className="px-8 py-5 border-b border-[#F1F5F9] bg-[#F8FAFC]/50 flex justify-between items-center">
                     <h3 className="text-sm font-black text-[#111827] uppercase tracking-wider">Registered Hardware</h3>
                     <div className="flex items-center gap-2.5">
-                        <Activity size={14} className="text-[#F59E0B]" />
+                        <Activity size={14} className="text-[#346eea]" />
                         <span className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Live Monitoring Active</span>
                     </div>
                 </div>
@@ -194,7 +194,7 @@ const DeviceList = () => {
                                         <td><span className="font-mono text-[11px] bg-[#F1F5F9] border border-[#E5E7EB] px-2 py-1 rounded-md text-[#475569]">{d.deviceId}</span></td>
                                         <td>
                                             <div className="flex items-center gap-2 text-[#64748B]">
-                                                <MapPin size={12} className="text-[#F59E0B]" />
+                                                <MapPin size={12} className="text-[#346eea]" />
                                                 <span className="font-medium">{d.location}</span>
                                             </div>
                                         </td>

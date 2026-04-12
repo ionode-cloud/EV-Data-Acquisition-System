@@ -97,7 +97,7 @@ const DevicesAndInfrastructure = () => {
                 {/* OTA Control Card */}
                 <div className="saas-card p-10 space-y-10">
                     <div className="flex items-center gap-3 pb-6 border-b border-[#F1F5F9]">
-                        <ShieldCheck size={20} className="text-[#F59E0B]" />
+                        <ShieldCheck size={20} className="text-[#346eea]" />
                         <h3 className="text-sm font-black text-[#111827] uppercase tracking-[0.2em]">Hardware Dispatch Center</h3>
                     </div>
 
@@ -137,7 +137,7 @@ const DevicesAndInfrastructure = () => {
                         {/* Remote Flash */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <Globe size={14} className="text-[#F59E0B]" />
+                                <Globe size={14} className="text-[#346eea]" />
                                 <label className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Remote Flash (Via URL)</label>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-4">
@@ -163,19 +163,19 @@ const DevicesAndInfrastructure = () => {
                         {/* Direct Binary Uplink */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <HardDrive size={14} className="text-[#F59E0B]" />
+                                <HardDrive size={14} className="text-[#346eea]" />
                                 <label className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Direct Binary Uplink (.bin)</label>
                             </div>
-                            <div className="group relative border-2 border-dashed border-[#E5E7EB] rounded-2xl p-8 hover:border-[#F59E0B] hover:bg-[#FFF7ED]/30 transition-all cursor-pointer text-center bg-[#F8FAFC]">
+                            <div className="group relative border-2 border-dashed border-[#E5E7EB] rounded-2xl p-8 hover:border-[#346eea] hover:bg-[#FFF7ED]/30 transition-all cursor-pointer text-center bg-[#F8FAFC]">
                                 <input
                                     type="file" accept=".bin"
                                     onChange={e => setFile(e.target.files[0])}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                 />
-                                <Upload className="mx-auto mb-3 text-[#94A3B8] group-hover:text-[#F59E0B] group-hover:scale-110 transition-all" size={32} />
+                                <Upload className="mx-auto mb-3 text-[#94A3B8] group-hover:text-[#346eea] group-hover:scale-110 transition-all" size={32} />
                                 <p className="text-sm font-bold text-[#111827]">Drop Firmware Binary</p>
                                 <p className="text-[10px] text-[#94A3B8] uppercase tracking-widest mt-1">Accepts raw .bin files up to 4MB</p>
-                                {file && <div className="mt-4 px-3 py-1 bg-white border border-[#F59E0B]/30 rounded-lg text-xs font-bold text-[#F59E0B] inline-flex items-center gap-2">📎 {file.name}</div>}
+                                {file && <div className="mt-4 px-3 py-1 bg-white border border-[#346eea]/30 rounded-lg text-xs font-bold text-[#346eea] inline-flex items-center gap-2">📎 {file.name}</div>}
                             </div>
                             <button
                                 onClick={handleUploadFirmware}

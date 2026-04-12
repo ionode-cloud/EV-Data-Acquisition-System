@@ -79,7 +79,7 @@ const DataLogs = () => {
             {/* Filter & Action Card */}
             <div className="saas-card p-8 bg-white border border-[#E5E7EB]">
                 <div className="flex items-center gap-3 mb-6">
-                    <FileText size={16} className="text-[#F59E0B]" />
+                    <FileText size={16} className="text-[#346eea]" />
                     <h3 className="text-xs font-black text-[#111827] uppercase tracking-[0.2em]">Log Extraction Parameters</h3>
                 </div>
                 
@@ -120,7 +120,7 @@ const DataLogs = () => {
             <div className="saas-card overflow-hidden">
                 <div className="px-8 py-5 border-b border-[#F1F5F9] bg-[#F8FAFC]/50 flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <Activity size={14} className="text-[#F59E0B]" />
+                        <Activity size={14} className="text-[#346eea]" />
                         <h3 className="text-[10px] font-black text-[#111827] uppercase tracking-wider">Device History Buffer</h3>
                     </div>
                     <span className="text-[10px] font-black text-[#94A3B8] bg-white border border-[#E5E7EB] px-3 py-1.5 rounded-lg uppercase tracking-widest">
@@ -146,7 +146,7 @@ const DataLogs = () => {
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={10} className="py-20 text-center"><div className="btn-spinner border-slate-200 border-t-[#F59E0B] mx-auto"></div></td></tr>
+                                <tr><td colSpan={10} className="py-20 text-center"><div className="btn-spinner border-slate-200 border-t-[#346eea] mx-auto"></div></td></tr>
                             ) : deviceData.length === 0 ? (
                                 <tr><td colSpan={10} className="py-20 text-center text-[#94A3B8] font-bold uppercase tracking-widest text-[10px]">No historical data found for this node.</td></tr>
                             ) : (

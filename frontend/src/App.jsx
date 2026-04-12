@@ -19,7 +19,7 @@ function App() {
   if (isLoading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-white flex-col gap-6">
-        <div className="w-12 h-12 border-4 border-slate-100 border-t-[#F59E0B] rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-slate-100 border-t-[#346eea] rounded-full animate-spin"></div>
         <div className="flex flex-col items-center">
           <p className="text-[#111827] font-black uppercase tracking-[0.2em] text-xs">Initializing Session</p>
           <p className="text-[#94A3B8] text-[10px] font-bold uppercase tracking-widest mt-1">Establishing Secure Handshake...</p>

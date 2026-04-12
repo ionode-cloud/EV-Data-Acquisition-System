@@ -65,7 +65,7 @@ const AdminPanel = () => {
                     <div>
                         <h1 className="text-2xl font-black text-[#111827] tracking-tight">Admin Console</h1>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-black text-[#F59E0B] uppercase tracking-[0.2em]">RESTRICTED</span>
+                            <span className="text-[10px] font-black text-[#346eea] uppercase tracking-[0.2em]">RESTRICTED</span>
                             <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Access Control & Infrastructure Security</span>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ const AdminPanel = () => {
                     {/* User Form Card */}
                     <div className="saas-card p-8 h-fit lg:col-span-1">
                         <div className="flex items-center gap-3 pb-4 border-b border-[#F1F5F9] mb-6">
-                            {editingUser ? <Edit size={16} className="text-[#F59E0B]" /> : <Plus size={16} className="text-[#F59E0B]" />}
+                            {editingUser ? <Edit size={16} className="text-[#346eea]" /> : <Plus size={16} className="text-[#346eea]" />}
                             <h3 className="text-sm font-black text-[#111827] uppercase tracking-wider">{editingUser ? 'Update User' : 'Provision User'}</h3>
                         </div>
 
@@ -137,7 +137,7 @@ const AdminPanel = () => {
                     <div className="saas-card lg:col-span-3 overflow-hidden flex flex-col">
                         <div className="px-8 py-5 border-b border-[#F1F5F9] bg-[#F8FAFC]/50 flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <Users size={14} className="text-[#F59E0B]" />
+                                <Users size={14} className="text-[#346eea]" />
                                 <h3 className="text-[10px] font-black text-[#111827] uppercase tracking-wider">Authenticated Personnel</h3>
                             </div>
                             <span className="text-[10px] font-black text-[#94A3B8] bg-white border border-[#E5E7EB] px-3 py-1.5 rounded-lg uppercase tracking-widest">
@@ -174,7 +174,7 @@ const AdminPanel = () => {
                                                 )}
                                                 <td className="text-right">
                                                     <div className="flex justify-end gap-1">
-                                                        <button onClick={() => handleEditClick(u)} className="p-2 text-[#94A3B8] hover:text-[#F59E0B] hover:bg-orange-50 rounded-lg transition-all" title="Modify Privilege"><Edit size={16} /></button>
+                                                        <button onClick={() => handleEditClick(u)} className="p-2 text-[#94A3B8] hover:text-[#346eea] hover:bg-orange-50 rounded-lg transition-all" title="Modify Privilege"><Edit size={16} /></button>
                                                         <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-[#94A3B8] hover:text-[#EF4444] hover:bg-red-50 rounded-lg transition-all" title="Revoke Access"><Trash2 size={16} /></button>
                                                     </div>
                                                 </td>

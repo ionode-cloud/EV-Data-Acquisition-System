@@ -94,7 +94,7 @@ const Register = () => {
             <div className="login-form-panel animate-in fade-in slide-in-from-right duration-700">
                 <div className="login-form-inner">
                     <div className="flex items-center gap-3 mb-10">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#F59E0B]">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#346eea]">
                             <Zap size={20} className="text-white fill-current" />
                         </div>
                         <div className="flex flex-col">
@@ -162,7 +162,7 @@ const Register = () => {
 
                             <p className="mt-8 text-center text-xs font-bold text-[#6B7280]">
                                 Already have an account?{' '}
-                                <Link to="/login" className="text-[#F59E0B] hover:underline">Sign in</Link>
+                                <Link to="/login" className="text-[#346eea] hover:underline">Sign in</Link>
                             </p>
                         </>
                     )}
@@ -189,7 +189,7 @@ const Register = () => {
                                             maxLength={1}
                                             value={digit}
                                             onChange={(e) => handleOtpChange(i, e.target.value)}
-                                            className={`w-12 h-14 bg-slate-50 border-2 rounded-xl text-center text-xl font-bold outline-none transition-all ${digit ? 'border-[#F59E0B] bg-orange-50 text-[#F59E0B]' : 'border-slate-100 focus:border-[#F59E0B]'}`}
+                                            className={`w-12 h-14 bg-slate-50 border-2 rounded-xl text-center text-xl font-bold outline-none transition-all ${digit ? 'border-[#346eea] bg-orange-50 text-[#346eea]' : 'border-slate-100 focus:border-[#346eea]'}`}
                                             autoFocus={i === 0}
                                         />
                                     ))}
@@ -204,7 +204,7 @@ const Register = () => {
                                     )}
                                 </button>
 
-                                <button type="button" onClick={handleResendOtp} disabled={countdown > 0} className="w-full text-center text-[10px] font-black text-[#F59E0B] uppercase tracking-widest">
+                                <button type="button" onClick={handleResendOtp} disabled={countdown > 0} className="w-full text-center text-[10px] font-black text-[#346eea] uppercase tracking-widest">
                                     {countdown > 0 ? `Retry in ${countdown}s` : 'Resend Code'}
                                 </button>
                             </form>
@@ -229,18 +229,18 @@ const Register = () => {
             {/* Hero Panel (Left Side via CSS) */}
             <div className="login-hero-panel flex-1 hidden lg:flex relative bg-[#111827] overflow-hidden items-center justify-center p-20 animate-in fade-in slide-in-from-left duration-700">
                 {/* Abstract Tech Pattern */}
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#F59E0B 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-[#111827] via-[#111827]/90 to-[#F59E0B]/5"></div>
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#346eea 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#111827] via-[#111827]/90 to-[#346eea]/5"></div>
                 
                 <div className="relative z-10 w-full max-w-lg text-center lg:text-left">
-                    <div className="inline-flex items-center gap-2 bg-[#F59E0B]/10 border border-[#F59E0B]/20 px-3 py-1.5 rounded-lg mb-8 mx-auto lg:mx-0">
-                        <UserPlus size={16} className="text-[#F59E0B]" />
-                        <span className="text-[10px] font-black text-[#F59E0B] uppercase tracking-[0.2em]">Provisioning Mode</span>
+                    <div className="inline-flex items-center gap-2 bg-[#346eea]/10 border border-[#346eea]/20 px-3 py-1.5 rounded-lg mb-8 mx-auto lg:mx-0">
+                        <UserPlus size={16} className="text-[#346eea]" />
+                        <span className="text-[10px] font-black text-[#346eea] uppercase tracking-[0.2em]">Provisioning Mode</span>
                     </div>
                     
                     <h2 className="text-5xl font-black text-white tracking-tighter leading-[1.1] mb-6">
                         Secure Fleet <br/> 
-                        <span className="text-[#F59E0B]">Onboarding.</span>
+                        <span className="text-[#346eea]">Onboarding.</span>
                     </h2>
                     
                     <p className="text-slate-400 text-lg font-medium leading-relaxed mb-12">
@@ -253,15 +253,15 @@ const Register = () => {
                             <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.2em]">Handshake</p>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-2xl font-black text-[#F59E0B] tracking-tighter">Instant</p>
+                            <p className="text-2xl font-black text-[#346eea] tracking-tighter">Instant</p>
                             <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.2em]">Sync Enabled</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Decorative Blur */}
-                <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#F59E0B]/5 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#F59E0B]/5 rounded-full blur-[120px]"></div>
+                <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#346eea]/5 rounded-full blur-[120px]"></div>
+                <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#346eea]/5 rounded-full blur-[120px]"></div>
             </div>
         </div>
     );

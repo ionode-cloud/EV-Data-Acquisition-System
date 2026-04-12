@@ -61,7 +61,7 @@ const Layout = () => {
                 {/* Logo Section */}
                 <div className="h-20 flex items-center px-6 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#F59E0B]">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#346eea]">
                             <Zap size={20} className="text-white fill-current" />
                         </div>
                         <div className="flex flex-col">
@@ -95,7 +95,7 @@ const Layout = () => {
                 {/* Bottom Profile Section */}
                 <div className="p-6 border-t border-white/5">
                     <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 mb-4">
-                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white bg-[#F59E0B] shrink-0">
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white bg-[#346eea] shrink-0">
                             {userInitial}
                         </div>
                         <div className="flex-1 min-w-0">

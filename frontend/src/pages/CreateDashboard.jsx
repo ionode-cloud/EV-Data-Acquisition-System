@@ -91,7 +91,7 @@ const CreateDashboard = () => {
                     {/* Device Config */}
                     <div className="saas-card p-8 flex flex-col gap-6">
                         <div className="flex items-center gap-3 pb-4 border-b border-[#F1F5F9]">
-                            <Cpu size={18} className="text-[#F59E0B]" />
+                            <Cpu size={18} className="text-[#346eea]" />
                             <h3 className="text-sm font-black text-[#111827] uppercase tracking-wider">Node Identification</h3>
                         </div>
 
@@ -126,7 +126,7 @@ const CreateDashboard = () => {
                     {/* Account Config */}
                     <div className="saas-card p-8 flex flex-col gap-6">
                         <div className="flex items-center gap-3 pb-4 border-b border-[#F1F5F9]">
-                            <User size={18} className="text-[#F59E0B]" />
+                            <User size={18} className="text-[#346eea]" />
                             <h3 className="text-sm font-black text-[#111827] uppercase tracking-wider">Ownership & Permissions</h3>
                         </div>
 
