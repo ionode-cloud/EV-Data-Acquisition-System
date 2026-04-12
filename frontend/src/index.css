@@ -230,7 +230,6 @@
 /* ============================= */
 .primary-btn {
   background: var(--primary);
-  width: 100%;
   color: #FFFFFF;
   font-weight: 700;
   padding: 10px 20px;

@@ -60,13 +60,13 @@ const Login = () => {
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Email Address</label>
                             <div className="relative">
-                                <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="auth-input pl-11"
-                                    placeholder="      admin@example.com"
+                                    placeholder="admin@example.com"
                                     required
                                 />
                             </div>
@@ -78,13 +78,13 @@ const Login = () => {
                                 <a href="#" className="text-[10px] font-black text-[#346eea] uppercase tracking-widest hover:underline">Forgot?</a>
                             </div>
                             <div className="relative">
-                                <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
+
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="auth-input pl-11 pr-11"
-                                    placeholder="      ••••••••"
+                                    placeholder="••••••••"
                                     required
                                 />
                                 <button
