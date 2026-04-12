@@ -1,0 +1,77 @@
+const mongoose = require('mongoose');
+
+const deviceDataSchema = new mongoose.Schema({
+    deviceId: {
+        type: String,
+        required: true,
+    },
+    batteryTemperature: {
+        type: Number,
+    },
+    motorTemperature: {
+        type: Number,
+    },
+    batterySOC: {
+        type: Number,
+    },
+    batteryVoltage: {
+        type: Number,
+    },
+    gpsLatitude: {
+        type: Number,
+    },
+    gpsLongitude: {
+        type: Number,
+    },
+    speed: {
+        type: Number,
+        default: 0,
+    },
+    motorRPM: {
+        type: Number,
+        default: 0,
+    },
+    wheelRPM: {
+        type: Number,
+        default: 0,
+    },
+    loss: {
+        type: Number,
+        default: 0,
+    },
+    torque: {
+        type: Number,
+        default: 0,
+    },
+    flRadar: {
+        type: Number,
+    },
+    frRadar: {
+        type: Number,
+    },
+    rlRadar: {
+        type: Number,
+    },
+    rrRadar: {
+        type: Number,
+    },
+    brakeStatus: {
+        type: String,
+        enum: ['APPLIED', 'RELEASED'],
+        default: 'RELEASED',
+    },
+    lux: {
+        type: Number,
+    },
+    headlightStatus: {
+        type: String,
+        enum: ['ON', 'OFF'],
+        default: 'OFF',
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now,
+    }
+});
+
+module.exports = mongoose.model('DeviceData', deviceDataSchema);
