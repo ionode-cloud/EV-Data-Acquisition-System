@@ -173,11 +173,17 @@ const Dashboard = () => {
     };
 
     const chartSeries = [{ name: 'SOC', data: deviceData.map(d => [new Date(d.timestamp).getTime(), d.batterySOC]) }];
-    // GPS is valid only when both fields are real finite numbers and not the 0,0 null-island
-    const lat = latestData?.gpsLatitude;
-    const lng = latestData?.gpsLongitude;
-    const hasGPS = Number.isFinite(lat) && Number.isFinite(lng) && !(lat === 0 && lng === 0);
-    const mapCenter = hasGPS ? [lat, lng] : [20.5937, 78.9629]; // India center (safer neutral default)
+    // Map Center coordinates
+    const rawLat = latestData?.gpsLatitude;
+    const rawLng = latestData?.gpsLongitude;
+    
+    // Convert to numbers safely (handles if API sends strings)
+    const lat = parseFloat(rawLat);
+    const lng = parseFloat(rawLng);
+    
+    // Valid GPS if both are real numbers and not exactly "0,0"
+    const hasGPS = !isNaN(lat) && !isNaN(lng) && !(lat === 0 && lng === 0);
+    const mapCenter = hasGPS ? [lat, lng] : [20.5937, 78.9629]; // Default India center
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
