@@ -301,6 +301,7 @@
 /* ============================= */
 .auth-input {
   width: 100%;
+  box-sizing: border-box;
   background: #FFFFFF;
   border: 1.5px solid var(--border);
   color: var(--text-dark);
@@ -309,6 +310,8 @@
   font-size: 0.9rem;
   outline: none;
   transition: all 0.2s ease;
+  /* Prevent iOS zoom on focus (font-size must be >= 16px on iOS) */
+  font-size: 16px;
 }
 
 .auth-input:focus {
@@ -324,6 +327,7 @@
 /* ============================= */
 .login-page {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height for mobile browsers */
   display: flex;
   background: white;
   flex-direction: row-reverse;
@@ -335,10 +339,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 24px 20px; /* tighter on mobile */
   background: white;
   position: relative;
   z-index: 10;
+  overflow-y: auto;
+  min-width: 0;
 }
 
 .login-form-inner {
@@ -353,6 +359,12 @@
   overflow: hidden;
   display: none;
   /* Hidden on mobile */
+}
+
+@media (min-width: 640px) {
+  .login-form-panel {
+    padding: 40px;
+  }
 }
 
 @media (min-width: 1024px) {
