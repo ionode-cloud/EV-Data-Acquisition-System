@@ -64,7 +64,7 @@ const Dashboard = () => {
                     axios.get(`${apiUrl}/api/vehicle/latest?deviceId=${selectedDashboard.deviceId}`),
                     axios.get(`${apiUrl}/api/vehicle/history?deviceId=${selectedDashboard.deviceId}&limit=50`)
                 ]);
-                if (latestRes.data && latestRes.data.deviceId) {
+                if (latestRes.data && Object.keys(latestRes.data).length > 0) {
                     setLatestData(latestRes.data);
                     setIsConnected(true);
                 }
@@ -173,10 +173,11 @@ const Dashboard = () => {
     };
 
     const chartSeries = [{ name: 'SOC', data: deviceData.map(d => [new Date(d.timestamp).getTime(), d.batterySOC]) }];
-    // GPS is only valid if we have a non-null, non-zero fix
-    const hasGPS = !!(latestData?.gpsLatitude && latestData?.gpsLongitude &&
-        latestData.gpsLatitude !== 0 && latestData.gpsLongitude !== 0);
-    const mapCenter = hasGPS ? [latestData.gpsLatitude, latestData.gpsLongitude] : [20.2961, 85.8245];
+    // GPS is valid only when both fields are real finite numbers and not the 0,0 null-island
+    const lat = latestData?.gpsLatitude;
+    const lng = latestData?.gpsLongitude;
+    const hasGPS = Number.isFinite(lat) && Number.isFinite(lng) && !(lat === 0 && lng === 0);
+    const mapCenter = hasGPS ? [lat, lng] : [20.5937, 78.9629]; // India center (safer neutral default)
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -328,10 +329,10 @@ const Dashboard = () => {
                                     {hasGPS ? (
                                         <>
                                             <p className="text-[10px] font-mono font-bold text-white/80 tracking-widest">
-                                                {latestData.gpsLatitude.toFixed(6)}°N
+                                                {lat.toFixed(6)}°N
                                             </p>
                                             <p className="text-[10px] font-mono font-bold text-white/80 tracking-widest">
-                                                {latestData.gpsLongitude.toFixed(6)}°E
+                                                {lng.toFixed(6)}°E
                                             </p>
                                         </>
                                     ) : (
@@ -343,12 +344,12 @@ const Dashboard = () => {
                                 {hasGPS ? (
                                     <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%', minHeight: '300px' }} zoomControl={false}>
                                         <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>' />
-                                        <MapUpdater lat={latestData.gpsLatitude} lng={latestData.gpsLongitude} />
-                                        <Marker position={[latestData.gpsLatitude, latestData.gpsLongitude]}>
+                                        <MapUpdater lat={lat} lng={lng} />
+                                        <Marker position={[lat, lng]}>
                                             <Popup>
                                                 <strong>Vehicle Location</strong><br />
-                                                Lat: {latestData.gpsLatitude.toFixed(6)}<br />
-                                                Lng: {latestData.gpsLongitude.toFixed(6)}
+                                                Lat: {lat.toFixed(6)}<br />
+                                                Lng: {lng.toFixed(6)}
                                             </Popup>
                                         </Marker>
                                     </MapContainer>
