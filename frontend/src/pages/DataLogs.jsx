@@ -13,7 +13,7 @@ const DataLogs = () => {
     useEffect(() => {
         const fetchDashboards = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                const apiUrl = import.meta.env.VITE_API_URL ;
                 const res = await axios.get(`${apiUrl}/api/dashboards`);
                 setDashboards(res.data);
                 if (res.data.length > 0) setSelectedDeviceId(res.data[0].deviceId);
@@ -29,7 +29,7 @@ const DataLogs = () => {
         const fetchHistory = async () => {
             setLoading(true);
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                const apiUrl = import.meta.env.VITE_API_URL ;
                 const res = await axios.get(`${apiUrl}/api/vehicle/history?deviceId=${selectedDeviceId}&limit=100`);
                 setDeviceData(res.data);
             } catch (error) {
@@ -43,7 +43,7 @@ const DataLogs = () => {
 
     const handleDownload = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const url = `${apiUrl}/api/download?deviceId=${selectedDeviceId}&startDate=${startDate}&endDate=${endDate}`;
             const response = await axios.get(url, { responseType: 'blob' });
             const link = document.createElement('a');

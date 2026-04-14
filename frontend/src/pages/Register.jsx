@@ -31,7 +31,7 @@ const Register = () => {
         setError('');
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             await axios.post(`${apiUrl}/api/auth/register`, { email, password, role: 'user' });
             setStep(STEPS.OTP);
             setCountdown(60);
@@ -47,7 +47,7 @@ const Register = () => {
         setError('');
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             await axios.post(`${apiUrl}/api/auth/send-otp`, { email });
             setCountdown(60);
             setSuccess('OTP resent successfully!');
@@ -76,7 +76,7 @@ const Register = () => {
         setError('');
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             await axios.post(`${apiUrl}/api/auth/verify-otp`, { email, otp: code });
             setStep(STEPS.DONE);
         } catch (err) {

@@ -15,7 +15,7 @@ const DevicesAndInfrastructure = () => {
 
     const fetchDevices = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const res = await axios.get(`${apiUrl}/api/devices`);
             setDevices(res.data);
         } catch (error) { console.error('Error fetching devices', error); }
@@ -26,7 +26,7 @@ const DevicesAndInfrastructure = () => {
         setIsLoading(prev => ({ ...prev, check: true }));
         setUploadStatus('QUERYING_HARDWARE_NODE...');
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const res = await axios.get(`${apiUrl}/api/ota/check-device?device=${selectedDevice}`);
             setDeviceStatus(res.data.online);
             setUploadStatus(res.data.online ? '✓ SYSTEM_STATUS: ONLINE' : '⚠ SYSTEM_STATUS: OFFLINE');
@@ -43,7 +43,7 @@ const DevicesAndInfrastructure = () => {
         setIsLoading(prev => ({ ...prev, link: true }));
         setUploadStatus('INITIALIZING_REMOTE_FLASH...');
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const res = await axios.post(`${apiUrl}/api/ota/update-link/${selectedDevice}`, { url: gitLink });
             setUploadStatus(`✓ ${res.data}`);
             setGitLink('');
@@ -62,7 +62,7 @@ const DevicesAndInfrastructure = () => {
         setIsLoading(prev => ({ ...prev, upload: true }));
         setUploadStatus('TRANSMITTING_BINARY_PAYLOAD...');
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const res = await axios.post(`${apiUrl}/api/ota/upload/${selectedDevice}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });

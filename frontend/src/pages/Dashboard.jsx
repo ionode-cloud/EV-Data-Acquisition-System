@@ -26,7 +26,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchDashboards = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                const apiUrl = import.meta.env.VITE_API_URL ;
                 const res = await axios.get(`${apiUrl}/api/dashboards`);
                 const all = res.data || [];
                 setDashboards(all);
@@ -48,7 +48,7 @@ const Dashboard = () => {
         if (!selectedDashboard) return;
         const fetchData = async () => {
             try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                const apiUrl = import.meta.env.VITE_API_URL ;
                 const [latestRes, historyRes] = await Promise.all([
                     axios.get(`${apiUrl}/api/vehicle/latest?deviceId=${selectedDashboard.deviceId}`),
                     axios.get(`${apiUrl}/api/vehicle/history?deviceId=${selectedDashboard.deviceId}&limit=50`)

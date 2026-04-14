@@ -26,7 +26,7 @@ const DeviceList = () => {
 
     const fetchDevices = async () => {
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             const res = await axios.get(`${apiUrl}/api/devices`);
             setDevices(res.data);
         } catch (err) {
@@ -44,7 +44,7 @@ const DeviceList = () => {
         setFormSuccess('');
         setFormLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             await axios.post(`${apiUrl}/api/devices`, { deviceName, deviceId, location });
             setFormSuccess(`Device added successfully!`);
             setDeviceName(''); setDeviceId(''); setLocation('');
@@ -60,7 +60,7 @@ const DeviceList = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this device?')) return;
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = import.meta.env.VITE_API_URL ;
             await axios.delete(`${apiUrl}/api/devices/${id}`);
             setDevices(prev => prev.filter(d => d._id !== id));
         } catch (err) {
