@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Chart from 'react-apexcharts';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import {
     Zap, Thermometer, MapPin, Gauge, Signal, Search,
@@ -14,6 +14,17 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 let DefaultIcon = L.icon({ iconUrl: icon, shadowUrl: iconShadow, iconSize: [25, 41], iconAnchor: [12, 41] });
 L.Marker.prototype.options.icon = DefaultIcon;
+
+// Syncs the map view whenever GPS coordinates change
+const MapUpdater = ({ lat, lng }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (lat && lng) {
+            map.flyTo([lat, lng], map.getZoom(), { animate: true, duration: 1.2 });
+        }
+    }, [lat, lng, map]);
+    return null;
+};
 
 const Dashboard = () => {
     const [dashboards, setDashboards] = useState([]);
@@ -300,7 +311,7 @@ const Dashboard = () => {
                         {/* Location Map */}
                         <div className="premium-kpi grad-indigo p-8 flex flex-col" style={{ minHeight: '450px' }}>
                             <div className="sparkline-bg opacity-10" />
-                            <div className="flex justify-between items-center mb-8 relative z-10 text-white">
+                            <div className="flex justify-between items-center mb-4 relative z-10 text-white">
                                 <div className="flex items-center gap-3">
                                     <div className="glass-icon">
                                         <MapPin size={20} />
@@ -310,16 +321,41 @@ const Dashboard = () => {
                                         <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Vehicle Geofence</p>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 bg-[#111827] relative z-10">
-                                <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false}>
-                                    <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
-                                    {latestData?.gpsLatitude && (
-                                        <Marker position={[latestData.gpsLatitude, latestData.gpsLongitude]}>
-                                            <Popup>Vehicle Location</Popup>
-                                        </Marker>
+                                <div className="text-right">
+                                    {latestData?.gpsLatitude ? (
+                                        <>
+                                            <p className="text-[10px] font-mono font-bold text-white/80 tracking-widest">
+                                                {latestData.gpsLatitude.toFixed(6)}°N
+                                            </p>
+                                            <p className="text-[10px] font-mono font-bold text-white/80 tracking-widest">
+                                                {latestData.gpsLongitude.toFixed(6)}°E
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">No Signal</p>
                                     )}
-                                </MapContainer>
+                                </div>
+                            </div>
+                            <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 bg-[#111827] relative z-10" style={{ minHeight: '300px' }}>
+                                {latestData?.gpsLatitude ? (
+                                    <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%', minHeight: '300px' }} zoomControl={false}>
+                                        <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>' />
+                                        <MapUpdater lat={latestData.gpsLatitude} lng={latestData.gpsLongitude} />
+                                        <Marker position={[latestData.gpsLatitude, latestData.gpsLongitude]}>
+                                            <Popup>
+                                                <strong>Vehicle Location</strong><br />
+                                                Lat: {latestData.gpsLatitude.toFixed(6)}<br />
+                                                Lng: {latestData.gpsLongitude.toFixed(6)}
+                                            </Popup>
+                                        </Marker>
+                                    </MapContainer>
+                                ) : (
+                                    <div className="h-full w-full flex flex-col items-center justify-center gap-3" style={{ minHeight: '300px' }}>
+                                        <MapPin size={36} className="text-white/20" />
+                                        <p className="text-[11px] font-black text-white/30 uppercase tracking-[0.2em]">Awaiting GPS Signal...</p>
+                                        <div className="w-2 h-2 rounded-full bg-white/20 animate-pulse" />
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
