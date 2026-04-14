@@ -173,7 +173,10 @@ const Dashboard = () => {
     };
 
     const chartSeries = [{ name: 'SOC', data: deviceData.map(d => [new Date(d.timestamp).getTime(), d.batterySOC]) }];
-    const mapCenter = latestData?.gpsLatitude ? [latestData.gpsLatitude, latestData.gpsLongitude] : [20.2961, 85.8245];
+    // GPS is only valid if we have a non-null, non-zero fix
+    const hasGPS = !!(latestData?.gpsLatitude && latestData?.gpsLongitude &&
+        latestData.gpsLatitude !== 0 && latestData.gpsLongitude !== 0);
+    const mapCenter = hasGPS ? [latestData.gpsLatitude, latestData.gpsLongitude] : [20.2961, 85.8245];
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
@@ -322,7 +325,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    {latestData?.gpsLatitude ? (
+                                    {hasGPS ? (
                                         <>
                                             <p className="text-[10px] font-mono font-bold text-white/80 tracking-widest">
                                                 {latestData.gpsLatitude.toFixed(6)}°N
@@ -337,7 +340,7 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 bg-[#111827] relative z-10" style={{ minHeight: '300px' }}>
-                                {latestData?.gpsLatitude ? (
+                                {hasGPS ? (
                                     <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%', minHeight: '300px' }} zoomControl={false}>
                                         <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>' />
                                         <MapUpdater lat={latestData.gpsLatitude} lng={latestData.gpsLongitude} />

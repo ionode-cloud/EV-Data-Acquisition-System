@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Database, Download, Calendar, FileText, ChevronRight, Clock, MapPin, Activity } from 'lucide-react';
+import { Database, Download, Calendar, FileText, ChevronRight, Clock, MapPin, Activity, Navigation } from 'lucide-react';
 
 const DataLogs = () => {
     const [dashboards, setDashboards] = useState([]);
@@ -169,9 +169,25 @@ const DataLogs = () => {
                                         <td className="text-[#64748B] font-bold">{d.loss}%</td>
                                         <td className="text-[#111827] font-black">{d.torque} Nm</td>
                                         <td>
-                                                <span className="text-[10px] font-mono font-bold tracking-tighter truncate max-w-[100px]">
-                                                    {d.gpsLatitude?.toFixed(4) ?? '0.0000'}, {d.gpsLongitude?.toFixed(4) ?? '0.0000'}
+                                            {d.gpsLatitude && d.gpsLongitude && d.gpsLatitude !== 0 && d.gpsLongitude !== 0 ? (
+                                                <a
+                                                    href={`https://www.google.com/maps?q=${d.gpsLatitude},${d.gpsLongitude}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] transition-colors"
+                                                    title={`${d.gpsLatitude.toFixed(6)}, ${d.gpsLongitude.toFixed(6)}`}
+                                                >
+                                                    <Navigation size={10} className="text-[#346eea] flex-shrink-0" />
+                                                    <span className="text-[10px] font-mono font-bold text-[#346eea] tracking-tight whitespace-nowrap">
+                                                        {d.gpsLatitude.toFixed(4)}°, {d.gpsLongitude.toFixed(4)}°
+                                                    </span>
+                                                </a>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F1F5F9] border border-[#E2E8F0]">
+                                                    <MapPin size={10} className="text-[#94A3B8]" />
+                                                    <span className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">No GPS</span>
                                                 </span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
