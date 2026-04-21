@@ -114,7 +114,8 @@ const AdminPanel = () => {
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">System Role</label>
                                 <select className="auth-input font-bold" value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value })}>
-                                    <option value="user">Operator</option>
+                                    <option value="user">Standard User</option>
+                                    <option value="operator">System Operator</option>
                                     <option value="admin">Administrator</option>
                                 </select>
                             </div>
@@ -163,8 +164,8 @@ const AdminPanel = () => {
                                             <tr key={u._id} className="hover:bg-[#F8FAFC] transition-colors">
                                                 <td><span className="font-bold text-[#111827]">{u.email}</span></td>
                                                 <td>
-                                                    <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-md border ${u.role === 'admin' ? 'bg-orange-50 border-orange-200 text-orange-600' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
-                                                        {u.role === 'admin' ? 'Root Admin' : 'Node Operator'}
+                                                    <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-md border ${u.role === 'admin' ? 'bg-orange-50 border-orange-200 text-orange-600' : u.role === 'operator' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                                                        {u.role === 'admin' ? 'Root Admin' : u.role === 'operator' ? 'System Operator' : 'Standard User'}
                                                     </span>
                                                 </td>
                                                 {currentUser.role === 'admin' && (

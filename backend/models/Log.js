@@ -20,6 +20,12 @@ const logSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
         default: Date.now,
+    },
+    deviceName: {
+        type: String,
+    },
+    status: {
+        type: String,
     }
 });
 

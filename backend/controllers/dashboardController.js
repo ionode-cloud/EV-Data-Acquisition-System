@@ -23,7 +23,8 @@ exports.createDashboard = async (req, res) => {
             device = new Device({
                 deviceName: `${dashboardName} Device`,
                 deviceId,
-                particleId: newParticleId
+                particleId: newParticleId,
+                createdBy: req.user ? req.user.email : 'admin'
             });
             await device.save();
         }
@@ -84,7 +85,23 @@ exports.getDashboards = async (req, res) => {
         // Return all dashboards if no user filter is applicable.
         const query = (req.user && req.user.role !== 'admin') ? { user: req.user._id } : {};
         const dashboards = await Dashboard.find(query).populate('user', 'email');
-        res.status(200).json(dashboards);
+        
+        // Enrich dashboards with deviceName from the Device model
+        const deviceIds = [...new Set(dashboards.map(d => d.deviceId))];
+        const devices = await Device.find({ deviceId: { $in: deviceIds } });
+        
+        const deviceMap = devices.reduce((acc, dev) => {
+            acc[dev.deviceId] = dev;
+            return acc;
+        }, {});
+
+        const enrichedDashboards = dashboards.map(d => ({
+            ...d.toObject(),
+            deviceName: deviceMap[d.deviceId]?.deviceName || 'Unknown Device',
+            location: deviceMap[d.deviceId]?.location || 'Unknown Location'
+        }));
+
+        res.status(200).json(enrichedDashboards);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }

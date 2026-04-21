@@ -58,11 +58,24 @@ exports.getLatestVehicleData = async (req, res) => {
 // Return previous data logs.
 exports.getVehicleHistory = async (req, res) => {
     try {
-        const { deviceId, limit = 50 } = req.query;
-         if (!deviceId) {
+        const { deviceId, limit = 100, startDate, endDate } = req.query;
+        if (!deviceId) {
             return res.status(400).json({ message: 'Device ID is required' });
         }
-        const history = await DeviceData.find({ deviceId }).sort({ timestamp: -1 }).limit(parseInt(limit));
+
+        let query = { deviceId };
+
+        if (startDate || endDate) {
+            query.timestamp = {};
+            if (startDate) query.timestamp.$gte = new Date(startDate);
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+                query.timestamp.$lte = end;
+            }
+        }
+
+        const history = await DeviceData.find(query).sort({ timestamp: -1 }).limit(parseInt(limit));
         res.status(200).json(history);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

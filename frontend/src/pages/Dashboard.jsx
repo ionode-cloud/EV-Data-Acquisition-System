@@ -3,6 +3,7 @@ import axios from 'axios';
 import Chart from 'react-apexcharts';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import {
     Zap, Thermometer, MapPin, Gauge, Signal, Search,
     LayoutGrid, ChevronRight, Trash2, Cpu, Activity, Battery,
@@ -19,8 +20,12 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const MapUpdater = ({ lat, lng }) => {
     const map = useMap();
     useEffect(() => {
-        if (lat && lng) {
+        if (!isNaN(lat) && !isNaN(lng)) {
             map.flyTo([lat, lng], map.getZoom(), { animate: true, duration: 1.2 });
+            // Fix for tiles not loading correctly in some containers
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 500);
         }
     }, [lat, lng, map]);
     return null;
@@ -33,6 +38,32 @@ const Dashboard = () => {
     const [latestData, setLatestData] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isSelectingDashboard, setIsSelectingDashboard] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const handleDeleteDashboard = async (id, e) => {
+        e.stopPropagation();
+        if (!window.confirm('Are you sure you want to delete this vehicle dashboard? This action cannot be undone.')) return;
+        try {
+            const apiUrl = import.meta.env.VITE_API_URL;
+            await axios.delete(`${apiUrl}/api/dashboards/${id}`);
+            const updated = dashboards.filter(d => d._id !== id);
+            setDashboards(updated);
+            
+            // If the deleted one was selected, unset it or pick another
+            if (selectedDashboard?._id === id) {
+                if (updated.length > 0) {
+                    setIsSelectingDashboard(true);
+                    setSelectedDashboard(null);
+                } else {
+                    setSelectedDashboard(null);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to delete dashboard", err);
+            alert("Failed to delete dashboard. Please try again.");
+        }
+    };
 
     useEffect(() => {
         const fetchDashboards = async () => {
@@ -60,9 +91,12 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const apiUrl = import.meta.env.VITE_API_URL ;
+                const historyUrl = `${apiUrl}/api/vehicle/history?deviceId=${selectedDashboard.deviceId}&limit=50` + 
+                                  (startDate ? `&startDate=${startDate}` : '') + 
+                                  (endDate ? `&endDate=${endDate}` : '');
                 const [latestRes, historyRes] = await Promise.all([
                     axios.get(`${apiUrl}/api/vehicle/latest?deviceId=${selectedDashboard.deviceId}`),
-                    axios.get(`${apiUrl}/api/vehicle/history?deviceId=${selectedDashboard.deviceId}&limit=50`)
+                    axios.get(historyUrl)
                 ]);
                 if (latestRes.data && Object.keys(latestRes.data).length > 0) {
                     setLatestData(latestRes.data);
@@ -78,13 +112,13 @@ const Dashboard = () => {
         fetchData();
         const interval = setInterval(fetchData, 3000);
         return () => clearInterval(interval);
-    }, [selectedDashboard]);
+    }, [selectedDashboard, startDate, endDate]);
 
-    const kpis = latestData ? [
+    const kpis = [
         {
             icon: <Battery size={20} />,
             label: 'Battery SOC',
-            value: `${latestData.batterySOC ?? '0'}`,
+            value: `${latestData?.batterySOC ?? '0'}`,
             unit: '%',
             grad: 'grad-blue',
             trend: '+2.45%',
@@ -92,7 +126,7 @@ const Dashboard = () => {
         {
             icon: <Zap size={20} />,
             label: 'Voltage',
-            value: `${latestData.batteryVoltage ?? '0'}`,
+            value: `${latestData?.batteryVoltage ?? '0'}`,
             unit: 'V',
             grad: 'grad-teal',
             trend: '+1.12%',
@@ -100,7 +134,7 @@ const Dashboard = () => {
         {
             icon: <Thermometer size={20} />,
             label: 'Battery Temp',
-            value: `${latestData.batteryTemperature ?? '0'}`,
+            value: `${latestData?.batteryTemperature ?? '0'}`,
             unit: '°C',
             grad: 'grad-rose',
             trend: '-0.34%',
@@ -108,7 +142,7 @@ const Dashboard = () => {
         {
             icon: <Thermometer size={20} />,
             label: 'Motor Temp',
-            value: `${latestData.motorTemperature ?? '0'}`,
+            value: `${latestData?.motorTemperature ?? '0'}`,
             unit: '°C',
             grad: 'grad-orange',
             trend: '+2.10%',
@@ -116,7 +150,7 @@ const Dashboard = () => {
         {
             icon: <Activity size={20} />,
             label: 'Motor RPM',
-            value: (latestData.motorRPM ?? 0).toLocaleString(),
+            value: (latestData?.motorRPM ?? 0).toLocaleString(),
             unit: '',
             grad: 'grad-purple',
             trend: '+5.42%',
@@ -124,7 +158,7 @@ const Dashboard = () => {
         {
             icon: <Gauge size={20} />,
             label: 'Wheel RPM',
-            value: (latestData.wheelRPM ?? 0).toLocaleString(),
+            value: (latestData?.wheelRPM ?? 0).toLocaleString(),
             unit: '',
             grad: 'grad-indigo',
             trend: '+4.81%',
@@ -132,7 +166,7 @@ const Dashboard = () => {
         {
             icon: <Signal size={20} />,
             label: 'Loss',
-            value: `${latestData.loss ?? '0'}`,
+            value: `${latestData?.loss ?? '0'}`,
             unit: '%',
             grad: 'grad-navy',
             trend: '-1.05%',
@@ -140,12 +174,12 @@ const Dashboard = () => {
         {
             icon: <Zap size={20} />,
             label: 'Torque',
-            value: `${latestData.torque ?? '0'}`,
+            value: `${latestData?.torque ?? '0'}`,
             unit: 'Nm',
             grad: 'grad-emerald',
             trend: '+3.22%',
         },
-    ] : [];
+    ];
 
     const chartOptions = {
         chart: { type: 'area', toolbar: { show: false }, zoom: { enabled: false }, background: 'transparent' },
@@ -218,16 +252,28 @@ const Dashboard = () => {
 
                                     <div className="mt-6 relative z-10">
                                         <h3 className="text-xl font-black tracking-tight mb-1">{d.dashboardName}</h3>
-                                        <div className="flex items-center gap-2 text-white/60">
+                                        <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-2">{d.deviceName}</p>
+                                        <div className="flex items-center gap-2 text-white/40">
                                             <Cpu size={12} />
                                             <span className="text-xs font-mono font-bold uppercase tracking-wider">{d.deviceId}</span>
                                         </div>
                                     </div>
 
                                     <div className="mt-6 pt-4 border-t border-white/10 flex justify-between items-center relative z-10">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">Connect to Stream</span>
-                                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-[#111827] transition-all duration-500">
-                                            <ChevronRight size={18} />
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={(e) => handleDeleteDashboard(d._id, e)}
+                                                className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-rose-500/80 hover:text-white transition-all duration-300"
+                                                title="Delete Dashboard"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/80">View</span>
+                                            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-[#111827] transition-all duration-500">
+                                                <ChevronRight size={18} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +297,22 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <input 
+                                    type="date" 
+                                    className="bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs font-bold text-[#111827] outline-none shadow-sm"
+                                    value={startDate}
+                                    onChange={e => setStartDate(e.target.value)}
+                                />
+                                <span className="text-[10px] font-black text-[#94A3B8]">TO</span>
+                                <input 
+                                    type="date" 
+                                    className="bg-white border border-[#E5E7EB] rounded-xl px-3 py-2 text-xs font-bold text-[#111827] outline-none shadow-sm"
+                                    value={endDate}
+                                    onChange={e => setEndDate(e.target.value)}
+                                />
+                            </div>
                             <select
                                 className="bg-white border border-[#E5E7EB] rounded-xl px-4 py-2.5 text-sm font-bold text-[#111827] outline-none shadow-sm min-w-[180px]"
                                 value={selectedDashboard?._id || ''}
@@ -348,8 +409,14 @@ const Dashboard = () => {
                             </div>
                             <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 bg-[#111827] relative z-10" style={{ minHeight: '300px' }}>
                                 {hasGPS ? (
-                                    <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%', minHeight: '300px' }} zoomControl={false}>
-                                        <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>' />
+                                    <MapContainer 
+                                        key={selectedDashboard?.deviceId}
+                                        center={mapCenter} 
+                                        zoom={15} 
+                                        style={{ height: '100%', width: '100%', minHeight: '300px' }} 
+                                        zoomControl={false}
+                                    >
+                                        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" attribution='&copy; <a href="https://carto.com/">CARTO</a>' />
                                         <MapUpdater lat={lat} lng={lng} />
                                         <Marker position={[lat, lng]}>
                                             <Popup>

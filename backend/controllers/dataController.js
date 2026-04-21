@@ -123,3 +123,55 @@ exports.downloadExcel = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+const fs = require('fs');
+
+exports.uploadExcel = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.readFile(req.file.path);
+        const worksheet = workbook.getWorksheet(1);
+
+        const dataBuffer = [];
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) return; // Skip header
+
+            // Expected columns: 1: Device ID, 2: Device Name, 3: Battery Temp, 4: SOC, 5: Voltage, 6: Motor Temp, 7: Motor RPM, 8: Wheel RPM, 9: Loss, 10: Torque, 11: Latitude, 12: Longitude, 13: Timestamp
+            const deviceId = row.getCell(1).value;
+            if (!deviceId) return;
+
+            dataBuffer.push({
+                deviceId: String(deviceId),
+                deviceName: String(row.getCell(2).value || ''),
+                batteryTemperature: Number(row.getCell(3).value) || 0,
+                batterySOC: Number(row.getCell(4).value) || 0,
+                batteryVoltage: Number(row.getCell(5).value) || 0,
+                motorTemperature: Number(row.getCell(6).value) || 0,
+                motorRPM: Number(row.getCell(7).value) || 0,
+                wheelRPM: Number(row.getCell(8).value) || 0,
+                loss: Number(row.getCell(9).value) || 0,
+                torque: Number(row.getCell(10).value) || 0,
+                gpsLatitude: Number(row.getCell(11).value) || 0,
+                gpsLongitude: Number(row.getCell(12).value) || 0,
+                timestamp: row.getCell(13).value ? new Date(row.getCell(13).value) : new Date(),
+            });
+        });
+
+        if (dataBuffer.length > 0) {
+            await DeviceData.insertMany(dataBuffer);
+        }
+
+        // Clean up
+        fs.unlinkSync(req.file.path);
+
+        res.status(200).json({ message: `Successfully imported ${dataBuffer.length} records.`, count: dataBuffer.length });
+    } catch (error) {
+        console.error('Upload Error:', error);
+        if (req.file) fs.unlinkSync(req.file.path);
+        res.status(500).json({ message: 'Error processing excel file', error: error.message });
+    }
+};

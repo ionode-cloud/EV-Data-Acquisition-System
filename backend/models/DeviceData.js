@@ -5,6 +5,9 @@ const deviceDataSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    deviceName: {
+        type: String,
+    },
     batteryTemperature: {
         type: Number,
     },

@@ -2,13 +2,15 @@ const Log = require('../models/Log');
 
 exports.createLog = async (req, res) => {
     try {
-        const { deviceId, message, level, data } = req.body;
+        const { deviceId, message, level, data, deviceName, status } = req.body;
 
         const newLog = new Log({
             deviceId,
             message,
             level,
-            data
+            data,
+            deviceName,
+            status
         });
 
         await newLog.save();

@@ -30,6 +30,10 @@ const deviceSchema = new mongoose.Schema({
         type: String,
         enum: ['Online', 'Offline'],
         default: 'Offline',
+    },
+    createdBy: {
+        type: String,
+        required: true,
     }
 }, { timestamps: true });
 

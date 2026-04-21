@@ -40,9 +40,13 @@ const Layout = () => {
     ];
 
     const isAdmin = user?.role === 'admin';
-    const navLinks = isAdmin
-        ? allNavLinks
-        : allNavLinks.filter(link => link.path === '/' || link.path === '/devices');
+    const isOperator = user?.role === 'operator';
+
+    const navLinks = allNavLinks.filter(link => {
+        if (isAdmin) return true;
+        if (isOperator) return ['/', '/devices', '/logs'].includes(link.path);
+        return ['/', '/devices'].includes(link.path);
+    });
 
     return (
         <div className="flex h-screen overflow-hidden bg-[#F5F7FA]">

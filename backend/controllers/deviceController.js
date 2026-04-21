@@ -1,4 +1,5 @@
 const Device = require('../models/Device');
+const Dashboard = require('../models/Dashboard');
 
 // Add new device
 exports.addDevice = async (req, res) => {
@@ -14,6 +15,7 @@ exports.addDevice = async (req, res) => {
             deviceName,
             deviceId,
             location,
+            createdBy: req.user.email
         });
 
         await device.save();
@@ -26,7 +28,20 @@ exports.addDevice = async (req, res) => {
 // Get all devices
 exports.getDevices = async (req, res) => {
     try {
-        const devices = await Device.find().sort({ createdAt: -1 });
+        let query = {};
+        if (req.user && req.user.role !== 'admin') {
+            // Find devices linked to user's dashboards or created by the user
+            const userDashboards = await Dashboard.find({ user: req.user._id });
+            const userDeviceIds = userDashboards.map(d => d.deviceId);
+            
+            query = { 
+                $or: [
+                    { createdBy: req.user.email },
+                    { deviceId: { $in: userDeviceIds } }
+                ]
+            };
+        }
+        const devices = await Device.find(query).sort({ createdAt: -1 });
 
         // If status is not set manually, check based on last seen
         const devicesWithStatus = devices.map(device => {
